@@ -1,0 +1,54 @@
+:root {
+    --bg: #0d0f14;
+    --surface: #13161d;
+    --surface2: #1a1e27;
+    --border: #2a2f3d;
+    --border2: #353b4d;
+    --accent: #00e5a0;
+    --accent2: #00b87a;
+    --accent-dim: rgba(0, 229, 160, 0.12);
+    --text: #e8eaf0;
+    --text2: #8892a4;
+    --text3: #555f75;
+    --error: #ff5f6d;
+    --error-dim: rgba(255, 95, 109, 0.12);
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Syne', sans-serif;
+    --line-h: 22.275px;
+  }
+  
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  html, body, #root {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--surface); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+  
+  /* JSON syntax colours â€“ used in dangerouslySetInnerHTML */
+  .j-key   { color: #7dd3fc; }
+  .j-str   { color: #86efac; }
+  .j-num   { color: #fbbf24; }
+  .j-bool  { color: #c084fc; }
+  .j-null  { color: var(--text3); font-style: italic; }
+  .j-brace { color: var(--text2); }
+  
+  .tree-toggle { cursor: pointer; user-select: none; }
+  
+  @keyframes errPulse {
+    0%, 100% { background: var(--error-dim); }
+    50%       { background: rgba(255, 95, 109, 0.28); }
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  @keyframes slideUp {
+    from { transform: translateY(16px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }

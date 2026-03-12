@@ -1,0 +1,54 @@
+.gutter {
+  width: 44px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding-top: 16px;
+  user-select: none;
+}
+
+.line {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+  cursor: pointer;
+  transition: all 0.1s;
+  border-right: 2px solid transparent;
+  flex-shrink: 0;
+}
+
+.line:hover {
+  color: var(--text2);
+  background: var(--surface2);
+}
+
+.active {
+  color: var(--accent);
+  border-right-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.selected {
+  color: var(--accent);
+  background: rgba(0, 229, 160, 0.07);
+}
+
+.errorLine {
+  color: var(--error) !important;
+  background: var(--error-dim) !important;
+  border-right-color: var(--error) !important;
+  font-weight: 700;
+  animation: errPulse 1.2s ease-in-out 3;
+}
+
+@keyframes errPulse {
+  0%, 100% { background: var(--error-dim); }
+  50%       { background: rgba(255, 95, 109, 0.28); }
+}

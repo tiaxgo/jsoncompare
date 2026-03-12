@@ -1,0 +1,21 @@
+.footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 16px 24px;
+}
+
+.bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bottom p {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+}
+
+.sub {
+  font-size: 10px !important;
+}
