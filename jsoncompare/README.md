@@ -1,16 +1,70 @@
-# React + Vite
+# JSON Compare
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Ferramentas de JSON em uma UI rápida (React + Vite). O foco do projeto é oferecer utilitários como **formatar**, **validar**, **minificar** e **converter** JSON (XML/CSV/YAML), com uma interface moderna e atalhos de teclado.
 
-Currently, two official plugins are available:
+## Requisitos
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Node.js (recomendado: LTS)
+- npm
 
-## React Compiler
+## Como rodar
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Instalar dependências:
 
-## Expanding the ESLint configuration
+```bash
+npm install
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Rodar em desenvolvimento:
+
+```bash
+npm run dev
+```
+
+Build de produção:
+
+```bash
+npm run build
+```
+
+Pré-visualizar o build:
+
+```bash
+npm run preview
+```
+
+## Estrutura de pastas
+
+O `src/` é organizado para separar responsabilidades:
+
+- **`src/pages/`**: páginas/ferramentas do site (telas).
+- **`src/components/`**: componentes reutilizáveis da UI.
+- **`src/hooks/`**: hooks reutilizáveis (estado/comportamento).
+- **`src/utils/`**: funções utilitárias/lógica (ex.: JSON, conversões, etc.).
+- **`src/services/`**: camada de HTTP/integrações (quando houver).
+- **`src/styles/`**: estilos globais/temas (quando usado).
+
+Arquivos principais:
+
+- **`src/main.jsx`**: bootstrap do React.
+- **`src/App.jsx`**: tela principal atual da ferramenta.
+
+## Funcionalidades atuais (JSON Formatter)
+
+- **Formatar JSON**: formata com indentação configurável.
+- **Validar JSON**: valida e mostra status.
+- **Minificar JSON**: remove espaços/quebras.
+- **Converter**: JSON → XML / CSV / YAML.
+- **Upload**:
+  - **Arquivo**: carrega `.json`/`.txt`.
+  - **URL**: busca o conteúdo via `fetch` e carrega no editor.
+
+## Depuração de requisições HTTP
+
+Quando você usar o upload via URL (no modal), o console do navegador mostrará:
+
+- `Enviando requisição para:` (URL)
+- `Status da resposta:` (HTTP status)
+- `Dados recebidos:` (conteúdo retornado)
+- `Erro na requisição:` (em caso de falha)
+

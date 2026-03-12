@@ -33,6 +33,11 @@ const primaryBtnStyle = {
   ...btnStyle, background: 'var(--accent)', color: '#0d0f14', borderColor: 'var(--accent)',
 }
 
+const secondaryBtnStyle = {
+  ...btnStyle,
+  marginBottom: 12,
+}
+
 export function UploadModal({ open, onClose, onFileLoad, onUrlLoad }) {
   const fileRef = useRef(null)
   const [url, setUrl] = useState('')
@@ -86,6 +91,13 @@ export function UploadModal({ open, onClose, onFileLoad, onUrlLoad }) {
         {urlError && <p style={{ color: 'var(--error)', fontFamily: 'var(--mono)', fontSize: 12, marginBottom: 8 }}>{urlError}</p>}
         <button style={primaryBtnStyle} onClick={handleUrl} disabled={loading}>
           {loading ? 'Carregando...' : 'Carregar URL'}
+        </button>
+        <button
+          style={secondaryBtnStyle}
+          onClick={() => { setUrl(''); setUrlError('') }}
+          disabled={loading || (!url && !urlError)}
+        >
+          Limpar URL
         </button>
 
         <div style={{ textAlign: 'center', color: 'var(--text3)', fontSize: 12, fontFamily: 'var(--mono)', margin: '8px 0 12px' }}>— ou —</div>
