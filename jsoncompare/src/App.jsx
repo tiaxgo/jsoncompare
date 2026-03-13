@@ -1,10 +1,8 @@
 import { useState, useCallback, useEffect } from 'react'
-import { Navbar } from './components/Navbar'
 import { StatusBar } from './components/StatusBar'
 import { InputPane } from './components/InputPane'
 import { OutputPane } from './components/OutputPane'
 import { ControlsPanel } from './components/ControlsPanel'
-import { Sections } from './components/Sections'
 import { Toast } from './components/Toast'
 import { Tooltip } from './components/Tooltip'
 import { UploadModal } from './components/UploadModal'
@@ -15,9 +13,6 @@ import {
   formatBytes,
   getIndentValue,
   extractErrorLine,
-  toXML,
-  toCSV,
-  toYAML,
   SAMPLE_JSON,
 } from './utils/json'
 
@@ -34,7 +29,6 @@ export default function App() {
   const [status, setStatus] = useState('Pronto · Ctrl+Enter para formatar')
   const [isStatusError, setIsStatusError] = useState(false)
   const [uploadOpen, setUploadOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState('about')
   const [dragOver, setDragOver] = useState(false)
 
   const { toast, showToast } = useToast()
@@ -136,27 +130,6 @@ export default function App() {
     }
   }, [parseInput, renderOutput, hideError, ok, showToast, showError, input])
 
-  const convertTo = useCallback((format) => {
-    try {
-      const obj = parseInput()
-      if (obj === null) return
-      let result = ''
-      if (format === 'xml') result = '<?xml version="1.0" encoding="UTF-8"?>\n' + toXML(obj, 'root', 0)
-      else if (format === 'csv') result = toCSV(obj)
-      else result = toYAML(obj, 0)
-
-      const safe = result.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      setOutputHTML(`<span style="color:var(--text2);white-space:pre">${safe}</span>`)
-      setOutputRaw(result)
-      setOutputInfo({ text: `${format.toUpperCase()} · ${formatBytes(result.length)}`, outType: '' })
-      outputGutter.setLineCount(Math.max(1, result.split('\n').length))
-      ok(`Convertido para ${format.toUpperCase()}`)
-      showToast(`✓ Convertido para ${format.toUpperCase()}`, 'success')
-    } catch (e) {
-      showError(e.message, input)
-    }
-  }, [parseInput, ok, showToast, showError, input]) // eslint-disable-line
-
   const downloadJSON = useCallback(() => {
     const content = outputRaw || input
     if (!content) { showToast('Nada para baixar', ''); return }
@@ -221,13 +194,6 @@ export default function App() {
 
   return (
     <>
-      <Navbar
-        onSave={saveOnline}
-        onUpload={() => setUploadOpen(true)}
-        onConvert={convertTo}
-        onOpenTab={setActiveTab}
-      />
-
       <StatusBar
         message={status}
         isError={isStatusError}
@@ -270,7 +236,6 @@ export default function App() {
           onFormat={formatJSON}
           onValidate={validateJSON}
           onMinify={minifyJSON}
-          onConvert={convertTo}
           onUpload={() => setUploadOpen(true)}
           onDownload={downloadJSON}
           onClearAll={clearAll}
@@ -286,8 +251,6 @@ export default function App() {
           outType={outputInfo.outType}
         />
       </div>
-
-      <Sections activeTab={activeTab} onTabChange={setActiveTab} />
 
       <UploadModal
         open={uploadOpen}

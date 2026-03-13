@@ -1,6 +1,6 @@
 # JSON Compare
 
-Ferramentas de JSON em uma UI rápida (React + Vite). O foco do projeto é oferecer utilitários como **formatar**, **validar**, **minificar** e **converter** JSON (XML/CSV/YAML), com uma interface moderna e atalhos de teclado.
+Ferramentas de JSON em uma UI rápida (React + Vite). O foco do projeto é oferecer utilitários como **formatar**, **validar** e **minificar** JSON, com uma interface moderna e atalhos de teclado.
 
 ## Requisitos
 
@@ -40,7 +40,7 @@ O `src/` é organizado para separar responsabilidades:
 - **`src/pages/`**: páginas/ferramentas do site (telas).
 - **`src/components/`**: componentes reutilizáveis da UI.
 - **`src/hooks/`**: hooks reutilizáveis (estado/comportamento).
-- **`src/utils/`**: funções utilitárias/lógica (ex.: JSON, conversões, etc.).
+- **`src/utils/`**: funções utilitárias/lógica (ex.: JSON, etc.).
 - **`src/services/`**: camada de HTTP/integrações (quando houver).
 - **`src/styles/`**: estilos globais/temas (quando usado).
 
@@ -54,7 +54,6 @@ Arquivos principais:
 - **Formatar JSON**: formata com indentação configurável.
 - **Validar JSON**: valida e mostra status.
 - **Minificar JSON**: remove espaços/quebras.
-- **Converter**: JSON → XML / CSV / YAML.
 - **Upload**:
   - **Arquivo**: carrega `.json`/`.txt`.
   - **URL**: busca o conteúdo via `fetch` e carrega no editor.

@@ -106,57 +106,6 @@ window.__toggleNode = (id) => {
   if (toggle) toggle.textContent = toggle.textContent.replace(hidden ? '▸' : '▾', hidden ? '▾' : '▸')
 }
 
-// ─── Converters ──────────────────────────────────────────────────────────────
-
-export function toXML(val, tag, depth) {
-  const indent = '  '.repeat(depth)
-  if (val === null) return `${indent}<${tag} nil="true"/>\n`
-  if (typeof val !== 'object') return `${indent}<${tag}>${escapeHTML(String(val))}</${tag}>\n`
-  if (Array.isArray(val)) return val.map((v) => toXML(v, tag.replace(/s$/, ''), depth)).join('')
-  const children = Object.entries(val).map(([k, v]) => toXML(v, k, depth + 1)).join('')
-  return `${indent}<${tag}>\n${children}${indent}</${tag}>\n`
-}
-
-export function toCSV(obj) {
-  const arr = Array.isArray(obj) ? obj : [obj]
-  const keys = [...new Set(arr.flatMap((o) => (typeof o === 'object' && o ? Object.keys(o) : [])))]
-  if (!keys.length) throw new Error('Não é possível converter para CSV: sem chaves')
-  const header = keys.map((k) => `"${k}"`).join(',')
-  const rows = arr.map((o) =>
-    keys.map((k) => {
-      const v = o?.[k]
-      if (v === null || v === undefined) return ''
-      if (typeof v === 'object') return `"${JSON.stringify(v).replace(/"/g, '""')}"`
-      return `"${String(v).replace(/"/g, '""')}"`
-    }).join(',')
-  )
-  return [header, ...rows].join('\n')
-}
-
-export function toYAML(val, depth) {
-  const indent = '  '.repeat(depth)
-  if (val === null) return 'null'
-  if (typeof val === 'boolean') return String(val)
-  if (typeof val === 'number') return String(val)
-  if (typeof val === 'string') {
-    if (/[\n:#{}\[\],&*?|<>=!%@`]/.test(val) || val.trim() !== val)
-      return `"${val.replace(/"/g, '\\"')}"`
-    return val
-  }
-  if (Array.isArray(val)) {
-    if (!val.length) return '[]'
-    return '\n' + val.map((v) => `${indent}- ${toYAML(v, depth + 1)}`).join('\n')
-  }
-  if (typeof val === 'object') {
-    if (!Object.keys(val).length) return '{}'
-    return '\n' + Object.entries(val).map(([k, v]) => {
-      const yv = toYAML(v, depth + 1)
-      return `${indent}${k}:${yv.startsWith('\n') ? yv : ' ' + yv}`
-    }).join('\n')
-  }
-  return String(val)
-}
-
 // ─── Sample data ──────────────────────────────────────────────────────────────
 
 export const SAMPLE_JSON = {

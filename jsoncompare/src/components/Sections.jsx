@@ -4,7 +4,6 @@ const FAQ_ITEMS = [
   { q: 'Por que usar o JSONCompare?', a: 'É uma ferramenta única para formatar, validar, converter e visualizar JSON. Funciona 100% no navegador, sem enviar dados para servidores externos.' },
   { q: 'Como formatar um arquivo JSON?', a: 'Clique em "Upload", selecione seu arquivo .json, depois clique em "Formatar". O resultado aparece no painel direito com realce de sintaxe.' },
   { q: 'Meus dados são enviados para algum servidor?', a: 'Não. Todo o processamento acontece localmente no seu navegador. Nenhum dado é transmitido para servidores externos.' },
-  { q: 'Quais conversões estão disponíveis?', a: 'JSON → XML, JSON → CSV (para arrays de objetos) e JSON → YAML.' },
   { q: 'O que é Tree View?', a: 'É uma visualização hierárquica expansível do JSON formatado, útil para explorar estruturas complexas.' },
 ]
 
@@ -23,9 +22,9 @@ export function Sections({ activeTab, onTabChange }) {
     <div style={{ borderTop: '1px solid var(--border)' }}>
       {/* Tabs */}
       <div style={{ display: 'flex', background: 'var(--surface)', borderBottom: '1px solid var(--border)', padding: '0 24px' }}>
-        {['about', 'faq', 'convert'].map((t) => (
+        {['about', 'faq'].map((t) => (
           <button key={t} style={tabBtnStyle(activeTab === t)} onClick={() => onTabChange(t)}>
-            {t === 'about' ? 'Sobre' : t === 'faq' ? 'FAQ' : 'Conversores'}
+            {t === 'about' ? 'Sobre' : 'FAQ'}
           </button>
         ))}
       </div>
@@ -75,28 +74,6 @@ export function Sections({ activeTab, onTabChange }) {
                 )}
               </div>
             ))}
-          </div>
-        )}
-
-        {activeTab === 'convert' && (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
-            <div>
-              <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 16 }}>Conversores disponíveis</h3>
-              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {['JSON → XML: converte objetos e arrays em tags XML', 'JSON → CSV: ideal para arrays de objetos com chaves uniformes', 'JSON → YAML: formato legível para configurações'].map((t, i) => (
-                  <li key={i} style={{ fontFamily: 'var(--mono)', fontSize: 12, color: 'var(--text2)', paddingLeft: 16, position: 'relative' }}>
-                    <span style={{ position: 'absolute', left: 0, color: 'var(--accent)' }}>→</span>
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 16 }}>Como usar</h3>
-              <p style={{ fontFamily: 'var(--mono)', fontSize: 13, color: 'var(--text2)', lineHeight: 1.8 }}>
-                Cole o JSON no painel esquerdo e clique no botão de conversão correspondente no painel central. O resultado aparece no painel direito pronto para copiar.
-              </p>
-            </div>
           </div>
         )}
       </div>

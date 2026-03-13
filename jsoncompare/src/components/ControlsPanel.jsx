@@ -37,7 +37,7 @@ const panelStyle = {
     appearance: 'none',
   }
   
-  export function ControlsPanel({ indent, onIndentChange, onFormat, onValidate, onMinify, onConvert, onUpload, onDownload, onClearAll }) {
+  export function ControlsPanel({ indent, onIndentChange, onFormat, onValidate, onMinify, onUpload, onDownload, onClearAll }) {
     return (
       <div style={panelStyle}>
         <span style={labelStyle}>Ação</span>
@@ -53,12 +53,6 @@ const panelStyle = {
           <option value="4">4 espaços</option>
           <option value="tab">Tab</option>
         </select>
-  
-        <div style={{ height: 1, background: 'var(--border)', margin: '4px 0' }} />
-        <span style={labelStyle}>Converter</span>
-        <button style={btnStyle} onClick={() => onConvert('xml')}><span>⇢</span> → XML</button>
-        <button style={btnStyle} onClick={() => onConvert('csv')}><span>⇢</span> → CSV</button>
-        <button style={btnStyle} onClick={() => onConvert('yaml')}><span>⇢</span> → YAML</button>
   
         <div style={{ height: 1, background: 'var(--border)', margin: '4px 0' }} />
         <span style={labelStyle}>Arquivo</span>
