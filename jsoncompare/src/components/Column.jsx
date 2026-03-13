@@ -4,6 +4,7 @@ import { useGutter } from '../hooks/useGutter'
 import { InputPane } from './InputPane'
 import { OutputPane } from './OutputPane'
 import { ControlsPanel } from './ControlsPanel'
+import { RequestBar } from './RequestBar'
 import {
   syntaxHighlight,
   formatBytes,
@@ -12,7 +13,7 @@ import {
   SAMPLE_JSON,
 } from '../utils/json'
 
-export function Column({ id, onStatus, showToast, onOpenRequest }) {
+export function Column({ id, onStatus, showToast }) {
   const [input, setInput] = useState('')
   const [outputHTML, setOutputHTML] = useState('')
   const [outputRaw, setOutputRaw] = useState('')
@@ -22,6 +23,7 @@ export function Column({ id, onStatus, showToast, onOpenRequest }) {
   const [errorMsg, setErrorMsg] = useState(null)
   const [validIndicator, setValidIndicator] = useState(null)
   const [dragOver, setDragOver] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const inputGutter = useGutter()
   const outputGutter = useGutter()
@@ -118,6 +120,40 @@ export function Column({ id, onStatus, showToast, onOpenRequest }) {
     hideError()
   }, [hideError])
 
+  const handleRequest = async (method, url) => {
+    setLoading(true)
+    hideError()
+    onStatus(`Enviando ${method} para ${url}...`, false)
+    try {
+      const options = {
+        method,
+        headers: method === 'POST' ? { 'Content-Type': 'application/json' } : {},
+        body: method === 'POST' ? input : null,
+      }
+      const res = await fetch(url, options)
+      const text = await res.text()
+      
+      handleInputChange(text)
+      
+      // Auto-format if it's valid JSON
+      try {
+        const obj = JSON.parse(text)
+        const formatted = JSON.stringify(obj, null, getIndentValue(indent))
+        setInput(formatted)
+        renderOutput(formatted, obj)
+        onStatus(`Sucesso: ${res.status}`, false)
+        showToast(`✓ Request ${id} concluído`, 'success')
+      } catch {
+        onStatus(`Recebido (não JSON): ${res.status}`, false)
+        showToast(`! Request ${id} concluído (não JSON)`, 'warning')
+      }
+    } catch (e) {
+      showError(e.message, '')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleDrop = useCallback((e) => {
     e.preventDefault()
     setDragOver(false)
@@ -135,9 +171,10 @@ export function Column({ id, onStatus, showToast, onOpenRequest }) {
       style={{
         display: 'grid',
         gridTemplateColumns: '1fr 140px',
-        gridTemplateRows: '1fr 1fr',
+        gridTemplateRows: 'auto 1fr 1fr',
         height: '100%',
         minHeight: 0,
+        minWidth: 0,
         outline: dragOver ? '2px dashed var(--accent)' : 'none',
         outlineOffset: -2,
         borderRight: id === '1' ? '2px solid var(--border)' : 'none',
@@ -146,7 +183,12 @@ export function Column({ id, onStatus, showToast, onOpenRequest }) {
       onDragLeave={() => setDragOver(false)}
       onDrop={handleDrop}
     >
-      <div style={{ gridRow: '1', gridColumn: '1', minHeight: 0 }}>
+      {/* Request Bar on top spanning across the column (except controls) */}
+      <div style={{ gridRow: '1', gridColumn: '1', minWidth: 0 }}>
+        <RequestBar onSend={handleRequest} loading={loading} />
+      </div>
+
+      <div style={{ gridRow: '2', gridColumn: '1', minHeight: 0, minWidth: 0 }}>
         <InputPane
           value={input}
           onChange={handleInputChange}
@@ -160,21 +202,11 @@ export function Column({ id, onStatus, showToast, onOpenRequest }) {
           col={cursor.col}
           chars={inputChars}
           onLoadSample={loadSample}
-          onRequest={() => onOpenRequest(id, (text) => {
-            handleInputChange(text)
-            // Auto format after load if valid
-            try {
-              const obj = JSON.parse(text)
-              const formatted = JSON.stringify(obj, null, getIndentValue(indent))
-              setInput(formatted)
-              renderOutput(formatted, obj)
-            } catch {}
-          })}
           headerLabel={`⌨ Entrada ${id}`}
         />
       </div>
 
-      <div style={{ gridRow: '1 / span 2', gridColumn: '2', borderLeft: '1px solid var(--border)', background: 'var(--surface)' }}>
+      <div style={{ gridRow: '1 / span 3', gridColumn: '2', borderLeft: '1px solid var(--border)', background: 'var(--surface)', minWidth: 0 }}>
         <ControlsPanel
           indent={indent}
           onIndentChange={setIndent}
@@ -184,7 +216,7 @@ export function Column({ id, onStatus, showToast, onOpenRequest }) {
         />
       </div>
 
-      <div style={{ gridRow: '2', gridColumn: '1', minHeight: 0, borderTop: '1px solid var(--border)' }}>
+      <div style={{ gridRow: '3', gridColumn: '1', minHeight: 0, minWidth: 0, borderTop: '1px solid var(--border)' }}>
         <OutputPane
           html={outputHTML}
           rawText={outputRaw}

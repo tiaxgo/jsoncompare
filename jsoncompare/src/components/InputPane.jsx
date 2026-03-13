@@ -14,7 +14,6 @@ export function InputPane({
   errorLine, errorMsg,
   ln, col, chars,
   onLoadSample,
-  onRequest,
   headerLabel = '⌨ Entrada',
 }) {
   const taRef = useRef(null)
@@ -78,7 +77,6 @@ export function InputPane({
       <div style={{ height: 40, background: 'var(--surface)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 14px', flexShrink: 0 }}>
         <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--text3)' }}>{headerLabel}</span>
         <div style={{ display: 'flex', gap: 4 }}>
-          <button style={{ ...paneBtn, background: 'var(--accent)', color: '#0d0f14', fontWeight: 700, border: '1px solid var(--accent)' }} onClick={onRequest}>⤴ Request</button>
           <button style={paneBtn} data-tip="Limpar entrada" onClick={() => onChange('')}>✕</button>
           <button style={paneBtn} data-tip="Copiar conteúdo da entrada" onClick={() => value && navigator.clipboard.writeText(value)}>⎘ Copy</button>
           <button style={paneBtn} data-tip="Carregar JSON de exemplo" onClick={onLoadSample}>※ Exemplo</button>
