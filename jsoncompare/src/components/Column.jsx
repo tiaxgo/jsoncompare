@@ -117,6 +117,14 @@ export function Column({ id, onStatus, showToast }) {
     showToast('✓ JSON minificado (' + id + ')', 'success')
   }, [parseInput, renderOutput, hideError, onStatus, showToast, id])
 
+  const clearOutput = useCallback(() => {
+    setOutputHTML('')
+    setOutputRaw('')
+    setOutputInfo({ text: '—', outType: '—' })
+    outputGutter.setLineCount(1)
+    onStatus('Saída limpa (' + id + ')', false)
+  }, [id, onStatus, outputGutter])
+
   const loadSample = useCallback(() => {
     const text = JSON.stringify(SAMPLE_JSON, null, 2)
     setInput(text)
@@ -141,11 +149,20 @@ export function Column({ id, onStatus, showToast }) {
         }
       }
 
-      // 2. Handle Body if in 'body' mode and method is not GET
+      // 2. Handle Body if method is not GET
       const options = {
         method,
-        headers: method === 'POST' && mode === 'body' ? { 'Content-Type': 'application/json' } : {},
-        body: method === 'POST' && mode === 'body' ? input : null,
+        headers: {},
+      }
+
+      if (method !== 'GET') {
+        options.headers['Content-Type'] = 'application/json'
+        options.body = mode === 'body' ? input : JSON.stringify(
+          params.reduce((acc, p) => {
+            if (p.key.trim()) acc[p.key.trim()] = p.value
+            return acc
+          }, {})
+        )
       }
 
       const res = await fetch(finalUrl, options)
@@ -277,6 +294,7 @@ export function Column({ id, onStatus, showToast }) {
           info={outputInfo.text}
           outType={outputInfo.outType}
           headerLabel={`✦ Saída ${id}`}
+          onClear={clearOutput}
         />
       </div>
     </div>

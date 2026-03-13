@@ -10,7 +10,7 @@ const paneBtn = (active) => ({
   fontSize: 11, fontFamily: 'var(--mono)', transition: 'all .12s',
 })
 
-export function OutputPane({ html, rawText, gutter, onLineClick, onScrollActiveLine, info, outType, headerLabel = '✦ Saída' }) {
+export function OutputPane({ html, rawText, gutter, onLineClick, onScrollActiveLine, info, outType, headerLabel = '✦ Saída', onClear }) {
   const scrollRef = useRef(null)
   const [gutterScroll, setGutterScroll] = useState(0)
   const [treeMode, setTreeMode] = useState(false)
@@ -48,7 +48,7 @@ export function OutputPane({ html, rawText, gutter, onLineClick, onScrollActiveL
             {treeMode ? '⊟ Code' : '⊞ Tree'}
           </button>
           <button style={paneBtn(false)} data-tip="Copiar conteúdo da saída" onClick={() => rawText && navigator.clipboard.writeText(rawText)}>⎘ Copy</button>
-          <button style={paneBtn(false)} data-tip="Limpar saída" onClick={() => {}}>✕</button>
+          <button style={paneBtn(false)} data-tip="Limpar saída" onClick={onClear}>✕</button>
         </div>
       </div>
 
