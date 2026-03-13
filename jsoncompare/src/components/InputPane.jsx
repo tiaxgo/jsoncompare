@@ -72,7 +72,7 @@ export function InputPane({
   const errorTop = errorLine != null ? 16 + (errorLine - 1) * LINE_H : 0
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', borderRight: '1px solid var(--border)', overflow: 'hidden', height: '100%', minHeight: 0 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', height: '100%', minHeight: 0 }}>
       {/* Header */}
       <div style={{ height: 40, background: 'var(--surface)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 14px', flexShrink: 0 }}>
         <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--text3)' }}>{headerLabel}</span>

@@ -5,6 +5,7 @@ import { InputPane } from './InputPane'
 import { OutputPane } from './OutputPane'
 import { ControlsPanel } from './ControlsPanel'
 import { RequestBar } from './RequestBar'
+import { ParamsEditor } from './ParamsEditor'
 import {
   syntaxHighlight,
   formatBytes,
@@ -14,6 +15,8 @@ import {
 } from '../utils/json'
 
 export function Column({ id, onStatus, showToast }) {
+  const [mode, setMode] = useState('params') // 'params' or 'body'
+  const [params, setParams] = useState([{ key: '', value: '' }])
   const [input, setInput] = useState('')
   const [outputHTML, setOutputHTML] = useState('')
   const [outputRaw, setOutputRaw] = useState('')
@@ -125,12 +128,27 @@ export function Column({ id, onStatus, showToast }) {
     hideError()
     onStatus(`Enviando ${method} para ${url}...`, false)
     try {
+      // 1. Handle Query Params if in 'params' mode
+      let finalUrl = url
+      if (mode === 'params') {
+        const queryParams = new URLSearchParams()
+        params.forEach(p => {
+          if (p.key.trim()) queryParams.append(p.key.trim(), p.value)
+        })
+        const qs = queryParams.toString()
+        if (qs) {
+          finalUrl += (finalUrl.includes('?') ? '&' : '?') + qs
+        }
+      }
+
+      // 2. Handle Body if in 'body' mode and method is not GET
       const options = {
         method,
-        headers: method === 'POST' ? { 'Content-Type': 'application/json' } : {},
-        body: method === 'POST' ? input : null,
+        headers: method === 'POST' && mode === 'body' ? { 'Content-Type': 'application/json' } : {},
+        body: method === 'POST' && mode === 'body' ? input : null,
       }
-      const res = await fetch(url, options)
+
+      const res = await fetch(finalUrl, options)
       const text = await res.text()
       
       handleInputChange(text)
@@ -166,12 +184,26 @@ export function Column({ id, onStatus, showToast }) {
 
   const inputChars = input.length
 
+  const tabStyle = (active) => ({
+    padding: '8px 16px',
+    fontSize: 11,
+    fontWeight: 700,
+    textTransform: 'uppercase',
+    letterSpacing: '.05em',
+    cursor: 'pointer',
+    background: active ? 'var(--surface2)' : 'transparent',
+    color: active ? 'var(--accent)' : 'var(--text3)',
+    border: 'none',
+    borderBottom: active ? '2px solid var(--accent)' : '2px solid transparent',
+    transition: 'all 0.15s',
+  })
+
   return (
     <div
       style={{
         display: 'grid',
-        gridTemplateColumns: '1fr 140px',
-        gridTemplateRows: 'auto 1fr 1fr',
+        gridTemplateColumns: '1fr',
+        gridTemplateRows: 'auto auto 1fr auto 1fr',
         height: '100%',
         minHeight: 0,
         minWidth: 0,
@@ -183,30 +215,48 @@ export function Column({ id, onStatus, showToast }) {
       onDragLeave={() => setDragOver(false)}
       onDrop={handleDrop}
     >
-      {/* Request Bar on top spanning across the column (except controls) */}
-      <div style={{ gridRow: '1', gridColumn: '1', minWidth: 0 }}>
+      {/* Request Bar on top */}
+      <div style={{ gridRow: '1', minWidth: 0 }}>
         <RequestBar onSend={handleRequest} loading={loading} />
       </div>
 
-      <div style={{ gridRow: '2', gridColumn: '1', minHeight: 0, minWidth: 0 }}>
-        <InputPane
-          value={input}
-          onChange={handleInputChange}
-          onCursor={(ln, col) => { setCursor({ ln, col }); inputGutter.setActiveLine(ln) }}
-          gutter={inputGutter.state}
-          onLineClick={inputGutter.handleLineClick}
-          onJumpToLine={inputGutter.setActiveLine}
-          errorLine={inputGutter.state.errorLine}
-          errorMsg={errorMsg}
-          ln={cursor.ln}
-          col={cursor.col}
-          chars={inputChars}
-          onLoadSample={loadSample}
-          headerLabel={`⌨ Entrada ${id}`}
-        />
+      {/* Tabs for Params / Body */}
+      <div style={{ 
+        gridRow: '2', 
+        display: 'flex', 
+        background: 'var(--surface)', 
+        borderBottom: '1px solid var(--border)',
+        padding: '0 8px',
+      }}>
+        <button style={tabStyle(mode === 'params')} onClick={() => setMode('params')}>Params</button>
+        <button style={tabStyle(mode === 'body')} onClick={() => setMode('body')}>Body</button>
       </div>
 
-      <div style={{ gridRow: '1 / span 3', gridColumn: '2', borderLeft: '1px solid var(--border)', background: 'var(--surface)', minWidth: 0 }}>
+      {/* Input / Params Area */}
+      <div style={{ gridRow: '3', minHeight: 0, minWidth: 0 }}>
+        {mode === 'params' ? (
+          <ParamsEditor params={params} onChange={setParams} />
+        ) : (
+          <InputPane
+            value={input}
+            onChange={handleInputChange}
+            onCursor={(ln, col) => { setCursor({ ln, col }); inputGutter.setActiveLine(ln) }}
+            gutter={inputGutter.state}
+            onLineClick={inputGutter.handleLineClick}
+            onJumpToLine={inputGutter.setActiveLine}
+            errorLine={inputGutter.state.errorLine}
+            errorMsg={errorMsg}
+            ln={cursor.ln}
+            col={cursor.col}
+            chars={inputChars}
+            onLoadSample={loadSample}
+            headerLabel={`⌨ Entrada ${id} (Body)`}
+          />
+        )}
+      </div>
+
+      {/* Controls Panel in the middle */}
+      <div style={{ gridRow: '4', minWidth: 0 }}>
         <ControlsPanel
           indent={indent}
           onIndentChange={setIndent}
@@ -216,7 +266,8 @@ export function Column({ id, onStatus, showToast }) {
         />
       </div>
 
-      <div style={{ gridRow: '3', gridColumn: '1', minHeight: 0, minWidth: 0, borderTop: '1px solid var(--border)' }}>
+      {/* Output Pane at the bottom */}
+      <div style={{ gridRow: '5', minHeight: 0, minWidth: 0 }}>
         <OutputPane
           html={outputHTML}
           rawText={outputRaw}
@@ -231,3 +282,4 @@ export function Column({ id, onStatus, showToast }) {
     </div>
   )
 }
+
