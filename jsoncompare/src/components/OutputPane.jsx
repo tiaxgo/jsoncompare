@@ -10,7 +10,7 @@ const paneBtn = (active) => ({
   fontSize: 11, fontFamily: 'var(--mono)', transition: 'all .12s',
 })
 
-export function OutputPane({ html, rawText, gutter, onLineClick, onScrollActiveLine, info, outType }) {
+export function OutputPane({ html, rawText, gutter, onLineClick, onScrollActiveLine, info, outType, headerLabel = '✦ Saída' }) {
   const scrollRef = useRef(null)
   const [gutterScroll, setGutterScroll] = useState(0)
   const [treeMode, setTreeMode] = useState(false)
@@ -42,7 +42,7 @@ export function OutputPane({ html, rawText, gutter, onLineClick, onScrollActiveL
     <div style={{ display: 'flex', flexDirection: 'column', borderLeft: '1px solid var(--border)', overflow: 'hidden', height: '100%', minHeight: 0 }}>
       {/* Header */}
       <div style={{ height: 40, background: 'var(--surface)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 14px', flexShrink: 0 }}>
-        <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--text3)' }}>✦ Saída</span>
+        <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--text3)' }}>{headerLabel}</span>
         <div style={{ display: 'flex', gap: 4 }}>
           <button style={paneBtn(treeMode)} data-tip={treeMode ? 'Voltar para visualização de código' : 'Visualização em árvore'} onClick={toggleView}>
             {treeMode ? '⊟ Code' : '⊞ Tree'}

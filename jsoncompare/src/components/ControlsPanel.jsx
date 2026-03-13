@@ -37,7 +37,7 @@ const panelStyle = {
     appearance: 'none',
   }
   
-  export function ControlsPanel({ indent, onIndentChange, onFormat, onValidate, onMinify, onUpload, onDownload, onClearAll }) {
+  export function ControlsPanel({ indent, onIndentChange, onFormat, onValidate, onMinify }) {
     return (
       <div style={panelStyle}>
         <span style={labelStyle}>Ação</span>
@@ -53,12 +53,6 @@ const panelStyle = {
           <option value="4">4 espaços</option>
           <option value="tab">Tab</option>
         </select>
-  
-        <div style={{ height: 1, background: 'var(--border)', margin: '4px 0' }} />
-        <span style={labelStyle}>Arquivo</span>
-        <button style={btnStyle} onClick={onUpload}><span>⤴</span> Upload</button>
-        <button style={btnStyle} onClick={onDownload}><span>⤓</span> Download</button>
-        <button style={{ ...btnStyle }} onClick={onClearAll}><span>⊘</span> Limpar tudo</button>
       </div>
     )
   }
